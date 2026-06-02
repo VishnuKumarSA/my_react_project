@@ -1,4 +1,4 @@
-const Header = () => {
+const Header = ({handleAdd}) => {
     return (
         <div>
             <nav className='flex justify-between items-center px-6 py-4 bg-gray-100 shadow'>
@@ -7,7 +7,7 @@ const Header = () => {
                     <li>About</li>
                     <li>Contact</li>
                 </ul>
-                <span className='bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600'>Add Product</span>
+                <span className='bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600' onClick={handleAdd}>Add Product</span>
             </nav>
                     
         </div>

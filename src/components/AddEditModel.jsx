@@ -5,8 +5,8 @@ const AddEditModal = ({ modalVisible, setModalVisible, saveProduct, editProductI
 
                 <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                     <span onClick={() => setModalVisible(false)} className="absolute top-2 right-2 text-white text-2xl cursor-pointer">&times;</span>
-                    <h2 className="text-xl font-bold mb-4">Add / Edit Product</h2>
-                    <form onSubmit={saveProduct}>
+                    {editProductId ? <h2 className="text-xl font-bold mb-4">Edit Product</h2> : <h2 className="text-xl font-bold mb-4">Add Product</h2>}
+                    <form onSubmit={ saveProduct}>
                         <div className="mb-4">
                             <label className="block text-gray-700 mb-2">Product Name</label>
                             <input
