@@ -1,56 +1,17 @@
-import AddEditModal from "./AddEditModel";
-import { useState } from 'react';
-
-const Home = () => {
-
-    const [productsList, setProductsList] = useState([
-        { id: 1, name: 'Product 1', price: 999 },
-        { id: 2, name: 'Product 2', price: 1499 },
-        { id: 3, name: 'Product 3', price: 1999 }
-    ]);
-
-    function handleEdit(id) {
-        setShowModal(true);
-        setProductId(id);
-        const productData = productsList.find(product => product.id === id)
-        setEditProductData(productData);
-    }
-
-    function handleDelete(id) {
-        alert(`delete product with id: ${id}`)
-    }
-
-    function saveProduct(e) {
-        e.preventDefault();
-
-        const updatedProductsList = productsList.map((product) =>
-            product.id === editProductId
-                ? editProductData
-                : product
-        );
-
-        setProductsList(updatedProductsList);
-
-        setShowModal(false);
-        setProductId(null);
-    }
-
-    function handleChange(e) {
-        const { name, value } = e.target;
-        setEditProductData(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
-    }
-
-    const [showModal, setShowModal] = useState(false);
-    const [editProductId, setProductId] = useState(null);
-    const [editProductData, setEditProductData] = useState(null);
+const Home = ({ handleDelete, handleEdit, deleteLoading, productsList, error, loading }) => {    
 
     return (
         <>
             <div className="grid grid-cols-3 gap-5 p-5">
-                {
+                {error && (<div className="col-span-3 text-center text-red-500">
+                    {error}
+                </div>)
+                }
+                {(loading || deleteLoading) ? (
+                    <div className="col-span-3 text-center">
+                        Loading...
+                    </div>
+                ) : productsList?.length > 0 ? (
                     productsList.map(product => (
                         <div key={product.id} className="bg-white p-4 rounded-lg shadow">
                             <h2 className="text-lg font-bold">{product.name}</h2>
@@ -61,9 +22,14 @@ const Home = () => {
                             </div>
                         </div>
                     ))
-                }
+                ) : (
+                    <div>
+                        <h1 className="text-2xl font-bold mb-4">No Products Available</h1>
+                    </div>
+                )}
+
             </div>
-            {showModal && <AddEditModal modalVisible={showModal} setModalVisible={setShowModal} saveProduct={saveProduct} editProductId={editProductId} editProductData={editProductData} handleChange={handleChange} />}
+           
 
         </>
     )
