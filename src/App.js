@@ -4,12 +4,18 @@ import Home from './components/Home';
 import Header from './components/Header';
 import useFetchAPI from "../src/useFetchAPI";
 import AddEditModal from './components/AddEditModel';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Products from './components/Products';
 
 
 function App() {
+
   const [productsList, setProductsList] = useState([]);
   const { data, loading, error } = useFetchAPI('/data.json');
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editProductId, setProductId] = useState(null);
+  const [editProductData, setEditProductData] = useState(null);
 
 
   useEffect(() => {
@@ -26,7 +32,6 @@ function App() {
   }
 
   function handleDelete(id) {
-    alert(`delete product with id: ${id}`)
     setDeleteLoading(true);
     setTimeout(() => {
       setProductsList(prev =>
@@ -71,16 +76,9 @@ function App() {
     }));
   }
 
-
-
-  const [showModal, setShowModal] = useState(false);
-  const [editProductId, setProductId] = useState(null);
-  const [editProductData, setEditProductData] = useState(null);
-
   function handleAdd() {
     setShowModal(true);
     setProductId(null);
-
     setEditProductData({
       name: "",
       price: ""
@@ -88,11 +86,32 @@ function App() {
   }
 
   return (
-    <>
+    <BrowserRouter>
       <Header handleAdd={handleAdd} />
-      <Home handleDelete={handleDelete} handleEdit={handleEdit} deleteLoading={deleteLoading} productsList={productsList} error={error} loading={loading} />
-      {showModal && <AddEditModal modalVisible={showModal} setModalVisible={setShowModal} saveProduct={saveProduct} editProductId={editProductId} editProductData={editProductData} handleChange={handleChange} />}
-    </>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/products' element={
+          <Products
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+            deleteLoading={deleteLoading}
+            productsList={productsList}
+            error={error}
+            loading={loading}
+          />
+        } />
+      </Routes>
+      {showModal &&
+        <AddEditModal
+          modalVisible={showModal}
+          setModalVisible={setShowModal}
+          saveProduct={saveProduct}
+          editProductId={editProductId}
+          editProductData={editProductData}
+          handleChange={handleChange}
+        />
+      }
+    </BrowserRouter>
   );
 }
 
