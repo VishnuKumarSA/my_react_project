@@ -6,6 +6,8 @@ import useFetchAPI from "../src/useFetchAPI";
 import AddEditModal from './components/AddEditModel';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Products from './components/Products';
+import NotFound from './components/NotFound';
+import ProductDetails from './components/ProductDetails';
 
 
 function App() {
@@ -87,19 +89,24 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header handleAdd={handleAdd} />
+      
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/products' element={
-          <Products
-            handleDelete={handleDelete}
-            handleEdit={handleEdit}
-            deleteLoading={deleteLoading}
-            productsList={productsList}
-            error={error}
-            loading={loading}
-          />
-        } />
+        <Route path="/" element={<Header handleAdd={handleAdd} />}>
+          <Route index element={<Home />} />
+          <Route path='/products' element={
+            <Products
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+              deleteLoading={deleteLoading}
+              productsList={productsList}
+              error={error}
+              loading={loading}
+            />
+          } >
+            <Route path=':id' element={<ProductDetails />} />
+          </Route>
+          <Route path='*' element={<NotFound />} />
+        </Route>
       </Routes>
       {showModal &&
         <AddEditModal

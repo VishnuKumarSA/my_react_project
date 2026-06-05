@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 const Header = ({ handleAdd }) => {
   return (
+    <>
     <nav className='flex justify-between items-center px-6 py-4 bg-gray-100 shadow'>
       <ul className='flex gap-6 text-gray-700 font-medium'>
         <li><Link to="/">Home</Link></li>
@@ -11,6 +12,8 @@ const Header = ({ handleAdd }) => {
         Add Product
       </span>
     </nav>
+    <Outlet />
+    </>
   );
 };
 
