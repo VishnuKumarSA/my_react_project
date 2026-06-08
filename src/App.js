@@ -4,11 +4,10 @@ import Home from './components/Home';
 import Header from './components/Header';
 import useFetchAPI from "../src/useFetchAPI";
 import AddEditModal from './components/AddEditModel';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Products from './components/Products';
 import NotFound from './components/NotFound';
 import ProductDetails from './components/ProductDetails';
-
+import { useRoutes } from 'react-router-dom';
 
 function App() {
 
@@ -19,51 +18,32 @@ function App() {
   const [editProductId, setProductId] = useState(null);
   const [editProductData, setEditProductData] = useState(null);
 
-
   useEffect(() => {
-    if (data) {
-      setProductsList(data);
-    }
+    if (data) setProductsList(data);
   }, [data]);
 
   function handleEdit(id) {
     setShowModal(true);
     setProductId(id);
-    const productData = productsList.find(product => product.id === id)
-    setEditProductData(productData);
+    setEditProductData(productsList.find(product => product.id === id));
   }
 
   function handleDelete(id) {
     setDeleteLoading(true);
     setTimeout(() => {
-      setProductsList(prev =>
-        prev.filter(product => product.id !== id)
-      );
+      setProductsList(prev => prev.filter(product => product.id !== id));
       setDeleteLoading(false);
-    }, 3000)
-
+    }, 3000);
   }
 
   function saveProduct(e) {
     e.preventDefault();
     if (editProductId === null) {
-
-      const newProduct = {
-        id: productsList.length + 1,
-        ...editProductData
-      };
-
-      setProductsList(prev => [
-        ...prev,
-        newProduct
-      ]);
+      setProductsList(prev => [...prev, { id: productsList.length + 1, ...editProductData }]);
     } else {
-      const updatedProductsList = productsList.map((product) =>
-        product.id === editProductId
-          ? editProductData
-          : product
+      setProductsList(prev =>
+        prev.map(product => product.id === editProductId ? editProductData : product)
       );
-      setProductsList(updatedProductsList);
     }
     setShowModal(false);
     setProductId(null);
@@ -72,28 +52,27 @@ function App() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setEditProductData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+    setEditProductData(prevData => ({ ...prevData, [name]: value }));
   }
 
   function handleAdd() {
     setShowModal(true);
     setProductId(null);
-    setEditProductData({
-      name: "",
-      price: ""
-    });
+    setEditProductData({ name: "", price: "" });
   }
 
-  return (
-    <BrowserRouter>
-      
-      <Routes>
-        <Route path="/" element={<Header handleAdd={handleAdd} />}>
-          <Route index element={<Home />} />
-          <Route path='/products' element={
+  const routesElement = useRoutes([
+    {
+      path: '/',
+      element: <Header handleAdd={handleAdd} />,   // Layout route (has <Outlet />)
+      children: [
+        {
+          index: true,
+          element: <Home />
+        },
+        {
+          path: 'products',
+          element: (
             <Products
               handleDelete={handleDelete}
               handleEdit={handleEdit}
@@ -102,12 +81,25 @@ function App() {
               error={error}
               loading={loading}
             />
-          } >
-            <Route path=':id' element={<ProductDetails />} />
-          </Route>
-          <Route path='*' element={<NotFound />} />
-        </Route>
-      </Routes>
+          ),
+          children: [
+            {
+              path: ':id',
+              element: <ProductDetails />
+            }
+          ]
+        },
+        {
+          path: '*',
+          element: <NotFound />
+        }
+      ]
+    }
+  ]);
+
+  return (
+    <div>
+      {routesElement}
       {showModal &&
         <AddEditModal
           modalVisible={showModal}
@@ -118,7 +110,7 @@ function App() {
           handleChange={handleChange}
         />
       }
-    </BrowserRouter>
+    </div>
   );
 }
 
