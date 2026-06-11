@@ -1,6 +1,10 @@
 import { Outlet, NavLink } from 'react-router-dom';
+import { useProduct } from './store/ProductContext';
 
-const Header = ({ handleAdd }) => {
+const Header = () => {
+
+  const { handleAdd } = useProduct();
+
   return (
     <>
       <nav className='flex justify-between items-center px-6 py-4 bg-gray-100 shadow'>

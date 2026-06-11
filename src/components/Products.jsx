@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import { useProduct } from './store/ProductContext';
 
-const Products = ({ handleDelete, handleEdit, deleteLoading, productsList, error, loading }) => {
+
+const Products = () => {
+    const { productsList, handleDelete, handleEdit, deleteLoading, error, loading } = useProduct();
+
     return (
         <>
             <div className="grid grid-cols-3 gap-5 p-5">
@@ -33,7 +37,7 @@ const Products = ({ handleDelete, handleEdit, deleteLoading, productsList, error
                     </div>
                 )}
             </div>
-            <Outlet/>
+            <Outlet />
         </>
     );
 };

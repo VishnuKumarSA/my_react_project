@@ -8,6 +8,7 @@ import Products from './components/Products';
 import NotFound from './components/NotFound';
 import ProductDetails from './components/ProductDetails';
 import { useRoutes } from 'react-router-dom';
+import { ProductContext } from './components/store/ProductContext';
 
 function App() {
 
@@ -61,10 +62,27 @@ function App() {
     setEditProductData({ name: "", price: "" });
   }
 
+  
+  const contextValue = {
+    productsList,
+    loading,
+    error,
+    deleteLoading,
+    showModal,
+    setShowModal,
+    editProductId,
+    editProductData,
+    handleAdd,
+    handleEdit,
+    handleDelete,
+    saveProduct,
+    handleChange
+  };
+
   const routesElement = useRoutes([
     {
       path: '/',
-      element: <Header handleAdd={handleAdd} />,   // Layout route (has <Outlet />)
+      element: <Header />,        
       children: [
         {
           index: true,
@@ -72,16 +90,7 @@ function App() {
         },
         {
           path: 'products',
-          element: (
-            <Products
-              handleDelete={handleDelete}
-              handleEdit={handleEdit}
-              deleteLoading={deleteLoading}
-              productsList={productsList}
-              error={error}
-              loading={loading}
-            />
-          ),
+          element: <Products />,  
           children: [
             {
               path: ':id',
@@ -98,19 +107,12 @@ function App() {
   ]);
 
   return (
-    <div>
-      {routesElement}
-      {showModal &&
-        <AddEditModal
-          modalVisible={showModal}
-          setModalVisible={setShowModal}
-          saveProduct={saveProduct}
-          editProductId={editProductId}
-          editProductData={editProductData}
-          handleChange={handleChange}
-        />
-      }
-    </div>
+    <ProductContext.Provider value={contextValue}>
+      <div>
+        {routesElement}
+        {showModal && <AddEditModal />}  
+      </div>
+    </ProductContext.Provider>
   );
 }
 
